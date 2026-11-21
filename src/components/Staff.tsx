@@ -14,7 +14,15 @@ const PAD_Y = 14;
 const STAFF_X1 = 8;
 const G4 = STAFF_BOTTOM_LINE + 2;
 
-export type NoteTone = "neutral" | "given" | "correct" | "wrong" | "answer" | "ghost";
+export type NoteTone =
+  | "neutral"
+  | "given"
+  | "correct"
+  | "wrong"
+  | "answer"
+  | "ghost"
+  /** Octave colour (Octaves screen), matching the fretboard markers. */
+  | `oct-${number}`;
 
 export interface StaffNote {
   position: number;
@@ -165,31 +173,49 @@ export function Staff({
         </text>
       ))}
 
+      {/* Two passes so every line sits under every note head, even when
+          notes in a column overlap: all ledger lines first, then the heads. */}
       {allNotes.map((n, i) => (
-        <NoteHead key={i} note={n} cy={y(n.position)} />
+        <NoteHead key={`l${i}`} note={n} cy={y(n.position)} layer="lines" />
+      ))}
+      {allNotes.map((n, i) => (
+        <NoteHead key={`h${i}`} note={n} cy={y(n.position)} layer="head" />
       ))}
     </svg>
   );
 }
 
-function NoteHead({ note, cy }: { note: StaffNote; cy: number }) {
+interface NoteHeadProps {
+  note: StaffNote;
+  cy: number;
+  /** "lines" draws the note's ledger lines; "head" draws the head and accidental. */
+  layer: "lines" | "head";
+}
+
+function NoteHead({ note, cy, layer }: NoteHeadProps) {
   const rx = STEP * 1.3;
   const ry = STEP * 0.95;
+  if (layer === "lines") {
+    return (
+      <g className={`staff-note tone-${note.tone}`}>
+        {ledgerLines(note.position).map((d) => {
+          const ly = cy + (note.position - d) * STEP;
+          return (
+            <line
+              key={d}
+              className="ledger-line"
+              x1={note.x - rx - 7}
+              x2={note.x + rx + 7}
+              y1={ly}
+              y2={ly}
+            />
+          );
+        })}
+      </g>
+    );
+  }
   return (
     <g className={`staff-note tone-${note.tone}`}>
-      {ledgerLines(note.position).map((d) => {
-        const ly = cy + (note.position - d) * STEP;
-        return (
-          <line
-            key={d}
-            className="ledger-line"
-            x1={note.x - rx - 7}
-            x2={note.x + rx + 7}
-            y1={ly}
-            y2={ly}
-          />
-        );
-      })}
       <ellipse
         cx={note.x}
         cy={cy}

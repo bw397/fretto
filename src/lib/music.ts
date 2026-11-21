@@ -181,3 +181,8 @@ export function writtenRange(maxFret: number = MAX_FRET): { low: number; high: n
     high: Math.max(...validStaffPositions(highMidi)),
   };
 }
+
+/** Scientific pitch octave number (C4 = middle C, octaves start on C). */
+export function octaveOf(midi: number): number {
+  return Math.floor(midi / 12) - 1;
+}

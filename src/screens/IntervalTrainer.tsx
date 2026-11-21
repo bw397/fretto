@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FretRangeToggle } from "../components/FretRangeToggle";
 import { RoundResult } from "../components/RoundResult";
 import { Fretboard, type FretMarker } from "../components/Fretboard";
@@ -11,6 +10,7 @@ import {
 } from "../lib/intervals";
 import { MAX_FRET, mod, soundingMidi, type FrettedNote } from "../lib/music";
 import { useScore } from "../lib/score";
+import { useScreenState } from "../lib/screenState";
 
 type Taps = (FrettedNote | null)[];
 const emptyTaps = (): Taps => Array(PROMPT_COUNT).fill(null);
@@ -19,14 +19,18 @@ const samePos = (a: FrettedNote | null, b: FrettedNote) =>
   !!a && a.string === b.string && a.fret === b.fret;
 
 export function IntervalTrainer() {
-  const [maxFret, setMaxFret] = useState(MAX_FRET);
-  const [round, setRound] = useState<IntervalRound>(() => randomIntervalRound(MAX_FRET));
-  const [taps, setTaps] = useState<Taps>(emptyTaps);
+  // Kept across screen switches so the current question isn't lost.
+  const [maxFret, setMaxFret] = useScreenState("interval.maxFret", MAX_FRET);
+  const [round, setRound] = useScreenState<IntervalRound>("interval.round", () =>
+    randomIntervalRound(MAX_FRET),
+  );
+  const [taps, setTaps] = useScreenState<Taps>("interval.taps", emptyTaps);
+  const [revealed, setRevealed] = useScreenState("interval.submitted", false);
   const { score, record } = useScore("interval");
 
   const { root, intervals } = round;
   const rootMidi = soundingMidi(root);
-  const revealed = taps.every(Boolean);
+  const ready = taps.every(Boolean);
 
   const targetMidi = (i: number) => rootMidi + intervals[i]!.semitones;
   const isCorrect = (i: number, tap: FrettedNote) => soundingMidi(tap) === targetMidi(i);
@@ -43,12 +47,18 @@ export function IntervalTrainer() {
       next[free] = pos;
     }
     setTaps(next);
-    if (next.every(Boolean)) record(next.every((t, i) => isCorrect(i, t!)));
+  }
+
+  function submit() {
+    if (!ready || revealed) return;
+    record(taps.every((t, i) => isCorrect(i, t!)));
+    setRevealed(true);
   }
 
   function newRound(range = maxFret) {
     setRound((prev) => randomIntervalRound(range, Math.random, prev.root));
     setTaps(emptyTaps());
+    setRevealed(false);
   }
 
   function changeRange(range: number) {
@@ -117,7 +127,9 @@ export function IntervalTrainer() {
       </section>
 
       <RoundResult
-        revealed={revealed}
+        ready={ready}
+        submitted={revealed}
+        onSubmit={submit}
         correct={correctCount === PROMPT_COUNT}
         nextLabel="Next root"
         onNext={() => newRound()}

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { FretRangeToggle } from "../components/FretRangeToggle";
 import { ScoreDisplay } from "../components/ScoreDisplay";
 import { RoundResult } from "../components/RoundResult";
@@ -16,6 +16,7 @@ import {
 } from "../lib/keys";
 import { MAX_FRET, writtenMidi, writtenRange, type FrettedNote } from "../lib/music";
 import { useScore } from "../lib/score";
+import { useScreenState } from "../lib/screenState";
 import { useScrollTo } from "../lib/scroll";
 
 const RANGE = writtenRange();
@@ -32,16 +33,18 @@ const samePos = (a: FrettedNote | null, b: FrettedNote) =>
   !!a && a.string === b.string && a.fret === b.fret;
 
 export function KeyTrainer() {
-  const [maxFret, setMaxFret] = useState(MAX_FRET);
-  const [round, setRound] = useState<KeyRound>(() => randomKeyRound(MAX_FRET));
-  const [taps, setTaps] = useState<Slots<FrettedNote>>(emptySlots);
-  const [placed, setPlaced] = useState<Slots<number>>(emptySlots);
+  // Kept across screen switches so the current question isn't lost.
+  const [maxFret, setMaxFret] = useScreenState("key.maxFret", MAX_FRET);
+  const [round, setRound] = useScreenState<KeyRound>("key.round", () => randomKeyRound(MAX_FRET));
+  const [taps, setTaps] = useScreenState<Slots<FrettedNote>>("key.taps", emptySlots);
+  const [placed, setPlaced] = useScreenState<Slots<number>>("key.placed", emptySlots);
+  const [revealed, setRevealed] = useScreenState("key.submitted", false);
   const { score, record } = useScore("key");
 
   const { key, rootPosition, targets } = round;
   const fretDone = taps.every(Boolean);
   const staffDone = placed.every((p) => p !== null);
-  const revealed = fretDone && staffDone;
+  const ready = fretDone && staffDone;
 
   // Bring the next unfinished step into view (the result scrolls itself).
   const fretRef = useRef<HTMLElement>(null);
@@ -59,16 +62,13 @@ export function KeyTrainer() {
     return { fretOk, staffOk: pos === staffAnswer, staffAnswer };
   }
 
-  function commit(nextTaps: Slots<FrettedNote>, nextPlaced: Slots<number>) {
-    setTaps(nextTaps);
-    setPlaced(nextPlaced);
-    if (nextTaps.every(Boolean) && nextPlaced.every((p) => p !== null)) {
-      const ok = nextTaps.every((t, i) => {
-        const g = grade(i, t!, nextPlaced[i]!);
-        return g.fretOk && g.staffOk;
-      });
-      record(ok);
-    }
+  function submit() {
+    if (!ready || revealed) return;
+    record(taps.every((t, i) => {
+      const g = grade(i, t!, placed[i]!);
+      return g.fretOk && g.staffOk;
+    }));
+    setRevealed(true);
   }
 
   function tapFretboard(pos: FrettedNote) {
@@ -82,20 +82,21 @@ export function KeyTrainer() {
       if (free < 0) return;
       next[free] = pos;
     }
-    commit(next, placed);
+    setTaps(next);
   }
 
   function placeOnStaff(position: number, column: number) {
     if (revealed) return;
     const next = [...placed] as Slots<number>;
     next[column] = position;
-    commit(taps, next);
+    setPlaced(next);
   }
 
   function newRound(range = maxFret) {
     setRound((prev) => randomKeyRound(range, Math.random, prev.key));
     setTaps(emptySlots());
     setPlaced(emptySlots());
+    setRevealed(false);
   }
 
   function changeRange(range: number) {
@@ -211,7 +212,9 @@ export function KeyTrainer() {
       </section>
 
       <RoundResult
-        revealed={revealed}
+        ready={ready}
+        submitted={revealed}
+        onSubmit={submit}
         correct={allCorrect}
         nextLabel="Next key"
         onNext={() => newRound()}

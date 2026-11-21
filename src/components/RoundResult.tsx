@@ -1,33 +1,38 @@
-import { useEffect, useRef, type ReactNode } from "react";
-import { scrollIntoView, scrollToTop } from "../lib/scroll";
+import { useRef, type ReactNode } from "react";
+import { scrollIntoView, scrollToTop, useOnBecomeTrue } from "../lib/scroll";
 
 interface Props {
-  revealed: boolean;
+  /** Every step has an answer, so the round can be checked. */
+  ready: boolean;
+  submitted: boolean;
+  onSubmit: () => void;
   correct: boolean;
-  /** The success or failure message. */
+  /** The success or failure message, shown after submitting. */
   children: ReactNode;
   nextLabel: string;
   onNext: () => void;
 }
 
 /**
- * The result message and Next button at the bottom of a practice screen.
- * Scrolls itself into view when the answer is revealed, and scrolls back to
- * the top when Next is pressed.
+ * The bottom of a practice screen: a Check answer button until the round is
+ * submitted, then the result message and Next button.
+ *
+ * Scrolls itself into view when the round becomes ready and when the result
+ * appears, and scrolls back to the top when Next is pressed.
  */
-export function RoundResult({ revealed, correct, children, nextLabel, onNext }: Props) {
+export function RoundResult({ ready, submitted, onSubmit, correct, children, nextLabel, onNext }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (!revealed) return;
+  useOnBecomeTrue(ready && !submitted, () => scrollIntoView(ref.current));
+  useOnBecomeTrue(submitted, () => {
     scrollIntoView(ref.current);
     nextRef.current?.focus({ preventScroll: true });
-  }, [revealed]);
+  });
 
   return (
     <div ref={ref} className="result" aria-live="polite">
-      {revealed && (
+      {submitted ? (
         <>
           <p className={`result-msg ${correct ? "ok" : "bad"}`}>{children}</p>
           <button
@@ -40,6 +45,13 @@ export function RoundResult({ revealed, correct, children, nextLabel, onNext }: 
           >
             {nextLabel}
           </button>
+        </>
+      ) : (
+        <>
+          <button className="next-btn" disabled={!ready} onClick={onSubmit}>
+            Check answer
+          </button>
+          {!ready && <p className="result-hint">Answer every step to check.</p>}
         </>
       )}
     </div>

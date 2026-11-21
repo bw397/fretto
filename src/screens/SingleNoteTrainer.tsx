@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { FretRangeToggle } from "../components/FretRangeToggle";
 import { ScoreDisplay } from "../components/ScoreDisplay";
 import { RoundResult } from "../components/RoundResult";
@@ -22,6 +22,7 @@ import {
   type FrettedNote,
 } from "../lib/music";
 import { useScore } from "../lib/score";
+import { useScreenState } from "../lib/screenState";
 import { useScrollTo } from "../lib/scroll";
 
 const RANGE = writtenRange();
@@ -33,15 +34,19 @@ const USER_X = 180;
 const ANSWER_X = 248;
 
 export function SingleNoteTrainer() {
-  const [maxFret, setMaxFret] = useState(MAX_FRET);
-  const [note, setNote] = useState<FrettedNote>(() => randomFrettedNote(Math.random, MAX_FRET));
-  const [chosenPc, setChosenPc] = useState<number | null>(null);
-  const [placed, setPlaced] = useState<number | null>(null);
+  // Kept across screen switches so the current question isn't lost.
+  const [maxFret, setMaxFret] = useScreenState("single-note.maxFret", MAX_FRET);
+  const [note, setNote] = useScreenState<FrettedNote>("single-note.note", () =>
+    randomFrettedNote(Math.random, MAX_FRET),
+  );
+  const [chosenPc, setChosenPc] = useScreenState<number | null>("single-note.name", null);
+  const [placed, setPlaced] = useScreenState<number | null>("single-note.placed", null);
+  const [revealed, setRevealed] = useScreenState("single-note.submitted", false);
   const { score, record } = useScore("single-note");
 
   const midi = writtenMidi(note);
   const answerPc = pitchClass(midi);
-  const revealed = chosenPc !== null && placed !== null;
+  const ready = chosenPc !== null && placed !== null;
 
   // Bring the next unanswered step into view (the result scrolls itself).
   const nameRef = useRef<HTMLElement>(null);
@@ -53,28 +58,25 @@ export function SingleNoteTrainer() {
   const staffCorrect = placed !== null && validStaffPositions(midi).includes(placed);
   const allCorrect = nameCorrect && staffCorrect;
 
-  function finish(pc: number | null, pos: number | null) {
-    if (pc === null || pos === null) return;
-    const ok = pc === answerPc && validStaffPositions(midi).includes(pos);
-    record(ok);
-  }
-
   function chooseName(pc: number) {
-    if (revealed) return;
-    setChosenPc(pc);
-    finish(pc, placed);
+    if (!revealed) setChosenPc(pc);
   }
 
   function place(pos: number) {
-    if (revealed) return;
-    setPlaced(pos);
-    finish(chosenPc, pos);
+    if (!revealed) setPlaced(pos);
+  }
+
+  function submit() {
+    if (!ready || revealed) return;
+    record(allCorrect);
+    setRevealed(true);
   }
 
   function next(range = maxFret) {
     setNote((prev) => randomFrettedNote(Math.random, range, prev));
     setChosenPc(null);
     setPlaced(null);
+    setRevealed(false);
   }
 
   function changeRange(range: number) {
@@ -164,7 +166,14 @@ export function SingleNoteTrainer() {
         />
       </section>
 
-      <RoundResult revealed={revealed} correct={allCorrect} nextLabel="Next note" onNext={next}>
+      <RoundResult
+        ready={ready}
+        submitted={revealed}
+        onSubmit={submit}
+        correct={allCorrect}
+        nextLabel="Next note"
+        onNext={next}
+      >
         {allCorrect ? (
           <>Correct! That's {formatSpelling(answerSpelling)}.</>
         ) : (

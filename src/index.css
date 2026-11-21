@@ -17,6 +17,16 @@
   --nut: #efe6d4;
   --note: #f2a93b;
 
+  /* Octave colours (Octaves screen): distinct hues, readable label text. */
+  --oct-2: #3d7fd1;
+  --oct-2-text: #fff;
+  --oct-3: #2e9a63;
+  --oct-3-text: #fff;
+  --oct-4: #f0b429;
+  --oct-4-text: #2a1d14;
+  --oct-5: #9b5bd4;
+  --oct-5-text: #fff;
+
   color-scheme: light;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.45;
@@ -423,6 +433,95 @@ body {
   fill: #d23a2f;
   stroke: #ffd9d5;
 }
+.fb-marker[class*="tone-oct-"] circle {
+  stroke: rgb(255 255 255 / 0.7);
+  stroke-width: 1.5;
+}
+.fb-marker.tone-oct-2 circle,
+.octave-swatch.oct-2 {
+  fill: var(--oct-2);
+  background: var(--oct-2);
+}
+.fb-marker.tone-oct-3 circle,
+.octave-swatch.oct-3 {
+  fill: var(--oct-3);
+  background: var(--oct-3);
+}
+.fb-marker.tone-oct-4 circle,
+.octave-swatch.oct-4 {
+  fill: var(--oct-4);
+  background: var(--oct-4);
+}
+.fb-marker.tone-oct-5 circle,
+.octave-swatch.oct-5 {
+  fill: var(--oct-5);
+  background: var(--oct-5);
+}
+.fb-marker.tone-oct-2 text,
+.octave-swatch.oct-2 {
+  fill: var(--oct-2-text);
+  color: var(--oct-2-text);
+}
+.fb-marker.tone-oct-3 text,
+.octave-swatch.oct-3 {
+  fill: var(--oct-3-text);
+  color: var(--oct-3-text);
+}
+.fb-marker.tone-oct-4 text,
+.octave-swatch.oct-4 {
+  fill: var(--oct-4-text);
+  color: var(--oct-4-text);
+}
+.fb-marker.tone-oct-5 text,
+.octave-swatch.oct-5 {
+  fill: var(--oct-5-text);
+  color: var(--oct-5-text);
+}
+/* Stacked octave notes overlap; an outline in the card colour separates them. */
+.staff-note[class*="tone-oct-"] ellipse {
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+.staff-note.tone-oct-2 ellipse {
+  fill: var(--oct-2);
+}
+.staff-note.tone-oct-3 ellipse {
+  fill: var(--oct-3);
+}
+.staff-note.tone-oct-4 ellipse {
+  fill: var(--oct-4);
+}
+.staff-note.tone-oct-5 ellipse {
+  fill: var(--oct-5);
+}
+.octave-legend {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.octave-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 650;
+}
+.octave-legend small {
+  display: block;
+  color: var(--muted);
+  font-weight: 500;
+}
+.octave-swatch {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  font-weight: 800;
+}
 .fb-hit {
   fill: transparent;
   cursor: pointer;
@@ -713,6 +812,15 @@ body {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+}
+.next-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.result-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 .next-btn:focus-visible {
   outline: 2px solid var(--text);

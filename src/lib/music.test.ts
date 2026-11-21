@@ -4,6 +4,7 @@ import {
   diatonicIndex,
   formatSpelling,
   ledgerLines,
+  octaveOf,
   pitchClass,
   randomFrettedNote,
   soundingMidi,
@@ -99,5 +100,14 @@ describe("accidentalFor", () => {
     expect(accidentalFor("E", 5)).toBeUndefined();
     expect(accidentalFor("C", 11)).toBeUndefined();
     expect(accidentalFor("A", 6)).toBeUndefined();
+  });
+});
+
+describe("octaveOf", () => {
+  test("octaves start on C", () => {
+    expect(octaveOf(40)).toBe(2); // low E open
+    expect(octaveOf(59)).toBe(3); // B3
+    expect(octaveOf(60)).toBe(4); // middle C
+    expect(octaveOf(76)).toBe(5); // high E, 12th fret
   });
 });

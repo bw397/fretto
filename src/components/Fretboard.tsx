@@ -26,7 +26,15 @@ function noteX(fret: number, frets: number): number {
 
 const stringY = (s: number) => TOP_Y + s * STRING_GAP;
 
-export type MarkerTone = "note" | "root" | "placed" | "correct" | "wrong" | "answer";
+export type MarkerTone =
+  | "note"
+  | "root"
+  | "placed"
+  | "correct"
+  | "wrong"
+  | "answer"
+  /** Octave colour (styled for octaves 2–5, the range of a 12-fret guitar). */
+  | `oct-${number}`;
 
 export interface FretMarker extends FrettedNote {
   tone: MarkerTone;

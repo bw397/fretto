@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 const behavior = (): ScrollBehavior =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
@@ -15,9 +15,21 @@ export function scrollToTop() {
 /**
  * Scrolls to `target` whenever it changes to a new element. Screens use it to
  * bring the next unfinished step into view as the user works through a round.
+ * Doesn't scroll on mount, so returning to a screen leaves the page at the top.
  */
 export function useScrollTo(target: RefObject<HTMLElement | null> | null) {
+  const prev = useRef(target);
   useEffect(() => {
-    if (target) scrollIntoView(target.current);
+    if (target && target !== prev.current) scrollIntoView(target.current);
+    prev.current = target;
   }, [target]);
+}
+
+/** Calls `fn` when `value` turns from false to true (not on mount). */
+export function useOnBecomeTrue(value: boolean, fn: () => void) {
+  const prev = useRef(value);
+  useEffect(() => {
+    if (value && !prev.current) fn();
+    prev.current = value;
+  });
 }

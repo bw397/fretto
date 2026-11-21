@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { IntervalTrainer } from "./IntervalTrainer";
 import { KeyTrainer } from "./KeyTrainer";
+import { OctaveReference } from "./OctaveReference";
 import { ScaleReference } from "./ScaleReference";
 import { StaffReference } from "./StaffReference";
 import { SingleNoteTrainer } from "./SingleNoteTrainer";
@@ -23,6 +24,7 @@ export const SCREENS: ScreenDef[] = [
   { id: "interval", title: "Interval Trainer", category: "Practice", component: IntervalTrainer },
   { id: "scale", title: "Scale", category: "Reference", component: ScaleReference },
   { id: "staff", title: "Staff", category: "Reference", component: StaffReference },
+  { id: "octaves", title: "Octaves", category: "Reference", component: OctaveReference },
 ];
 
 export const DEFAULT_SCREEN = SCREENS[0]!;
