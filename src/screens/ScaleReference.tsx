@@ -1,0 +1,99 @@
+import { Fretboard, type FretMarker } from "../components/Fretboard";
+import { Segmented } from "../components/Segmented";
+import { Staff, type StaffNote } from "../components/Staff";
+import { keyName, noteName, staffPositionInKey, type Mode } from "../lib/keys";
+import { writtenRange, type FrettedNote } from "../lib/music";
+import { scaleFromRoot } from "../lib/scale";
+import { useScreenState } from "../lib/screenState";
+
+const RANGE = writtenRange();
+const STAFF_LOW = RANGE.low - 1;
+const STAFF_HIGH = RANGE.high + 1;
+
+const STAFF_WIDTH = 440;
+const FIRST_X = 150;
+const NOTE_SPACING = 38;
+
+const MODES = [
+  { value: "major" as Mode, label: "Major" },
+  { value: "minor" as Mode, label: "Minor" },
+];
+
+export function ScaleReference() {
+  const [mode, setMode] = useScreenState<Mode>("scale.mode", "major");
+  const [root, setRoot] = useScreenState<FrettedNote | null>("scale.root", null);
+
+  const scale = root ? scaleFromRoot(root, mode) : null;
+
+  const markers: FretMarker[] = [];
+  const staffNotes: StaffNote[] = [];
+  const labels: { x: number; text: string }[] = [];
+
+  scale?.notes.forEach((n, i) => {
+    const isRoot = n.degree === 0 || n.degree === 7;
+    if (n.position) {
+      markers.push({ ...n.position, tone: isRoot ? "root" : "placed", label: noteName(n) });
+    }
+    const x = FIRST_X + i * NOTE_SPACING;
+    staffNotes.push({
+      position: staffPositionInKey(n.midi + 12, n),
+      accidental: null,
+      tone: isRoot ? "given" : "neutral",
+      x,
+    });
+    labels.push({ x, text: noteName(n) });
+  });
+
+  const missing = scale?.notes.filter((n) => !n.position).length ?? 0;
+
+  return (
+    <div className="trainer">
+      <div className="trainer-head">
+        <h1>Scale</h1>
+      </div>
+
+      <Segmented options={MODES} value={mode} onChange={setMode} label="Scale type" />
+
+      <section className="card">
+        <h2 className="step-label">
+          Fretboard
+          <span className="hint">{root ? "tap to change root" : "tap a root note"}</span>
+        </h2>
+        <Fretboard
+          markers={markers}
+          onTap={setRoot}
+          label={
+            scale
+              ? `${keyName(scale.key)} scale on the fretboard. Tap to choose a different root.`
+              : "Empty fretboard. Tap a note to choose the root."
+          }
+        />
+        {missing > 0 && (
+          <p className="scale-note">
+            {missing === 7 ? "The rest of the scale" : `${missing} note${missing > 1 ? "s" : ""}`}{" "}
+            would go past fret 12.
+          </p>
+        )}
+      </section>
+
+      <section className="card">
+        {scale ? (
+          <>
+            <h2 className="scale-title">{keyName(scale.key)}</h2>
+            <Staff
+              low={STAFF_LOW}
+              high={STAFF_HIGH}
+              notes={staffNotes}
+              disabled
+              keySignature={scale.key.signature}
+              labels={labels}
+              width={STAFF_WIDTH}
+            />
+          </>
+        ) : (
+          <p className="empty-hint">Tap a root note on the fretboard to see its scale.</p>
+        )}
+      </section>
+    </div>
+  );
+}
