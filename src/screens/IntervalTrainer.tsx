@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FretRangeToggle } from "../components/FretRangeToggle";
+import { RoundResult } from "../components/RoundResult";
 import { Fretboard, type FretMarker } from "../components/Fretboard";
 import { ScoreDisplay } from "../components/ScoreDisplay";
 import {
@@ -115,25 +116,23 @@ export function IntervalTrainer() {
         />
       </section>
 
-      <div className="result" aria-live="polite">
-        {revealed && (
+      <RoundResult
+        revealed={revealed}
+        correct={correctCount === PROMPT_COUNT}
+        nextLabel="Next root"
+        onNext={() => newRound()}
+      >
+        {correctCount === PROMPT_COUNT ? (
+          "Correct! All four intervals are in the right places."
+        ) : (
           <>
-            {correctCount === PROMPT_COUNT ? (
-              <p className="result-msg ok">Correct! All four intervals are in the right places.</p>
-            ) : (
-              <p className="result-msg bad">
-                Not quite. {correctCount}/{PROMPT_COUNT} correct
-                {wrongOctave > 0 &&
-                  ` (${wrongOctave === 1 ? "one was" : `${wrongOctave} were`} the right note in the wrong octave)`}
-                . The correct notes are shown in red.
-              </p>
-            )}
-            <button className="next-btn" onClick={() => newRound()} autoFocus>
-              Next root
-            </button>
+            Not quite. {correctCount}/{PROMPT_COUNT} correct
+            {wrongOctave > 0 &&
+              ` (${wrongOctave === 1 ? "one was" : `${wrongOctave} were`} the right note in the wrong octave)`}
+            . The correct notes are shown in red.
           </>
         )}
-      </div>
+      </RoundResult>
     </div>
   );
 }

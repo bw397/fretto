@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FretRangeToggle } from "../components/FretRangeToggle";
 import { ScoreDisplay } from "../components/ScoreDisplay";
+import { RoundResult } from "../components/RoundResult";
 import { Fretboard } from "../components/Fretboard";
 import { Staff, type StaffNote } from "../components/Staff";
 import {
@@ -21,6 +22,7 @@ import {
   type FrettedNote,
 } from "../lib/music";
 import { useScore } from "../lib/score";
+import { useScrollTo } from "../lib/scroll";
 
 const RANGE = writtenRange();
 // One extra position either side so the extremes aren't at the very edge.
@@ -40,6 +42,13 @@ export function SingleNoteTrainer() {
   const midi = writtenMidi(note);
   const answerPc = pitchClass(midi);
   const revealed = chosenPc !== null && placed !== null;
+
+  // Bring the next unanswered step into view (the result scrolls itself).
+  const nameRef = useRef<HTMLElement>(null);
+  const staffRef = useRef<HTMLElement>(null);
+  useScrollTo(
+    chosenPc !== null && placed === null ? staffRef : placed !== null && chosenPc === null ? nameRef : null,
+  );
   const nameCorrect = chosenPc === answerPc;
   const staffCorrect = placed !== null && validStaffPositions(midi).includes(placed);
   const allCorrect = nameCorrect && staffCorrect;
@@ -111,7 +120,7 @@ export function SingleNoteTrainer() {
         <Fretboard markers={[{ ...note, tone: "note" }]} />
       </section>
 
-      <section className="card">
+      <section className="card" ref={nameRef}>
         <h2 className="step-label">
           <span className="step-num">1</span> Name the note
         </h2>
@@ -140,7 +149,7 @@ export function SingleNoteTrainer() {
         </div>
       </section>
 
-      <section className="card">
+      <section className="card" ref={staffRef}>
         <h2 className="step-label">
           <span className="step-num">2</span> Place it on the staff
           <span className="hint">tap or drag</span>
@@ -155,27 +164,18 @@ export function SingleNoteTrainer() {
         />
       </section>
 
-      <div className="result" aria-live="polite">
-        {revealed && (
+      <RoundResult revealed={revealed} correct={allCorrect} nextLabel="Next note" onNext={next}>
+        {allCorrect ? (
+          <>Correct! That's {formatSpelling(answerSpelling)}.</>
+        ) : (
           <>
-            {allCorrect ? (
-              <p className="result-msg ok">
-                Correct! That's {formatSpelling(answerSpelling)}.
-              </p>
-            ) : (
-              <p className="result-msg bad">
-                Not quite. The note is {pitchClassLabel(answerPc)}, written{" "}
-                {spellings(midi).map(formatSpelling).join(" or ")}.
-                {nameCorrect && " You named it right, but the staff position is off."}
-                {staffCorrect && " The staff position is right, but the name is off."}
-              </p>
-            )}
-            <button className="next-btn" onClick={() => next()} autoFocus>
-              Next note
-            </button>
+            Not quite. The note is {pitchClassLabel(answerPc)}, written{" "}
+            {spellings(midi).map(formatSpelling).join(" or ")}.
+            {nameCorrect && " You named it right, but the staff position is off."}
+            {staffCorrect && " The staff position is right, but the name is off."}
           </>
         )}
-      </div>
+      </RoundResult>
     </div>
   );
 }

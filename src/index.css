@@ -300,6 +300,13 @@ body {
   outline-offset: 2px;
 }
 
+/* Keep auto-scrolled sections clear of the sticky header. */
+.card,
+.result {
+  scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 76px);
+  scroll-margin-bottom: 16px;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);

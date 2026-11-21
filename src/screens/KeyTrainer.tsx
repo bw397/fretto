@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FretRangeToggle } from "../components/FretRangeToggle";
 import { ScoreDisplay } from "../components/ScoreDisplay";
+import { RoundResult } from "../components/RoundResult";
 import { Fretboard, type FretMarker } from "../components/Fretboard";
 import { Staff, type StaffNote } from "../components/Staff";
 import {
@@ -15,6 +16,7 @@ import {
 } from "../lib/keys";
 import { MAX_FRET, writtenMidi, writtenRange, type FrettedNote } from "../lib/music";
 import { useScore } from "../lib/score";
+import { useScrollTo } from "../lib/scroll";
 
 const RANGE = writtenRange();
 const STAFF_LOW = RANGE.low - 1;
@@ -37,7 +39,14 @@ export function KeyTrainer() {
   const { score, record } = useScore("key");
 
   const { key, rootPosition, targets } = round;
-  const revealed = taps.every(Boolean) && placed.every((p) => p !== null);
+  const fretDone = taps.every(Boolean);
+  const staffDone = placed.every((p) => p !== null);
+  const revealed = fretDone && staffDone;
+
+  // Bring the next unfinished step into view (the result scrolls itself).
+  const fretRef = useRef<HTMLElement>(null);
+  const staffRef = useRef<HTMLElement>(null);
+  useScrollTo(fretDone && !staffDone ? staffRef : staffDone && !fretDone ? fretRef : null);
 
   /** Grade one slot given the user's fretboard tap and staff position. */
   function grade(i: number, tap: FrettedNote, pos: number) {
@@ -172,7 +181,7 @@ export function KeyTrainer() {
         </div>
       </section>
 
-      <section className="card">
+      <section className="card" ref={fretRef}>
         <h2 className="step-label">
           <span className="step-num">1</span> Find on the fretboard
           <span className="hint">{fretHint}</span>
@@ -184,7 +193,7 @@ export function KeyTrainer() {
         />
       </section>
 
-      <section className="card">
+      <section className="card" ref={staffRef}>
         <h2 className="step-label">
           <span className="step-num">2</span> Write on the staff
           <span className="hint">tap above names</span>
@@ -201,25 +210,16 @@ export function KeyTrainer() {
         />
       </section>
 
-      <div className="result" aria-live="polite">
-        {revealed && (
-          <>
-            {allCorrect ? (
-              <p className="result-msg ok">
-                Correct! {targets.map(noteName).join(", ")} are all in the right places.
-              </p>
-            ) : (
-              <p className="result-msg bad">
-                Not quite. Fretboard {fretScore}/3, staff {staffScore}/3. The correct answers
-                are shown in red.
-              </p>
-            )}
-            <button className="next-btn" onClick={() => newRound()} autoFocus>
-              Next key
-            </button>
-          </>
-        )}
-      </div>
+      <RoundResult
+        revealed={revealed}
+        correct={allCorrect}
+        nextLabel="Next key"
+        onNext={() => newRound()}
+      >
+        {allCorrect
+          ? `Correct! ${targets.map(noteName).join(", ")} are all in the right places.`
+          : `Not quite. Fretboard ${fretScore}/3, staff ${staffScore}/3. The correct answers are shown in red.`}
+      </RoundResult>
     </div>
   );
 }
