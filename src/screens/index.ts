@@ -4,9 +4,10 @@ import { KeyTrainer } from "./KeyTrainer";
 import { OctaveReference } from "./OctaveReference";
 import { ScaleReference } from "./ScaleReference";
 import { StaffReference } from "./StaffReference";
+import { StringDrill } from "./StringDrill";
 import { SingleNoteTrainer } from "./SingleNoteTrainer";
 
-export const CATEGORIES = ["Practice", "Reference"] as const;
+export const CATEGORIES = ["Practice", "Drills", "Reference"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export interface ScreenDef {
@@ -22,6 +23,7 @@ export const SCREENS: ScreenDef[] = [
   { id: "single-note", title: "Single Note Trainer", category: "Practice", component: SingleNoteTrainer },
   { id: "key", title: "Key Trainer", category: "Practice", component: KeyTrainer },
   { id: "interval", title: "Interval Trainer", category: "Practice", component: IntervalTrainer },
+  { id: "string-drill", title: "String Drill", category: "Drills", component: StringDrill },
   { id: "scale", title: "Scale", category: "Reference", component: ScaleReference },
   { id: "staff", title: "Staff", category: "Reference", component: StaffReference },
   { id: "octaves", title: "Octaves", category: "Reference", component: OctaveReference },

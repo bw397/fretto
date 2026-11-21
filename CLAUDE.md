@@ -38,7 +38,7 @@ Run the tests, typecheck and build after every change.
 
 ## Screens
 
-Screens are listed in `SCREENS` (`src/screens/index.ts`) with an `id` (the URL hash, e.g. `#/key`), a `title` and a `category` (`"Practice"` or `"Reference"`); the menu groups them by category. The first screen is the default. Routing is hash-based on purpose: it works on GitHub Pages with no server rewrites, so don't switch to path-based routing.
+Screens are listed in `SCREENS` (`src/screens/index.ts`) with an `id` (the URL hash, e.g. `#/key`), a `title` and a `category` (`"Practice"`, `"Drills"` or `"Reference"`); the menu groups them by category. The first screen is the default. Routing is hash-based on purpose: it works on GitHub Pages with no server rewrites, so don't switch to path-based routing.
 
 A screen is unmounted when you leave it, so:
 
@@ -56,6 +56,10 @@ The trainers (`SingleNoteTrainer`, `KeyTrainer`, `IntervalTrainer`) follow the s
 - `<RoundResult ready submitted onSubmit correct nextLabel onNext>` at the bottom: a Check answer button, then the message and Next button. It handles scrolling to itself, focusing Next and scrolling to the top on Next.
 - `useScrollTo(ref | null)` brings the next unfinished step into view. It doesn't scroll on mount, so returning to a screen doesn't jump.
 - After submitting, correct answers are green, the user's wrong answers are greyed, and the correct answer is shown in red (`tone` props on `Fretboard` markers and `Staff` notes).
+
+### Drill screen pattern
+
+Drills (`StringDrill`) are for fast repetition: no Check answer button and no `RoundResult`. A tap is graded immediately: `record(ok)`, then the persisted progress and question advance at once. The answered question and its right/wrong markers are held in local (non-persisted) `feedback` state for about a second and shown in place of the new question. Advancing at once means leaving mid-feedback can't let the same question be answered twice. `Fretboard`'s `focusString` prop highlights one string and limits taps to it.
 
 ## UI conventions
 

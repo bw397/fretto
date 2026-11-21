@@ -8,12 +8,20 @@ interface Props<T> {
   value: T;
   onChange: (value: T) => void;
   label: string;
+  /** Smaller buttons, for rows of settings. */
+  compact?: boolean;
 }
 
 /** A pill-shaped toggle between a few options. */
-export function Segmented<T extends string | number>({ options, value, onChange, label }: Props<T>) {
+export function Segmented<T extends string | number>({
+  options,
+  value,
+  onChange,
+  label,
+  compact,
+}: Props<T>) {
   return (
-    <div className="segmented" role="group" aria-label={label}>
+    <div className={`segmented${compact ? " compact" : ""}`} role="group" aria-label={label}>
       {options.map((o) => (
         <button
           key={o.value}

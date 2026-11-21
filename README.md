@@ -4,7 +4,7 @@ A mobile-friendly guitar practice app. Bun + React.
 
 ## Screens
 
-Open any screen from the hamburger menu (top right). The menu groups screens into **Practice** and **Reference**. Each screen has its own URL hash (e.g. `#/single-note`).
+Open any screen from the hamburger menu (top right). The menu groups screens into **Practice**, **Drills** and **Reference**. Each screen has its own URL hash (e.g. `#/single-note`).
 
 ### Practice
 
@@ -14,6 +14,17 @@ Open any screen from the hamburger menu (top right). The menu groups screens int
 - **Interval Trainer**: four intervals (e.g. third, fifth, minor third, seventh) and a random root on the fretboard. Tap where each interval is: the nearest one above the root (within an octave), on any string. Tap a marker to remove it. Wrong answers show the nearest correct spot in red.
 
 All three trainers have a Frets 0–5 / Frets 0–12 toggle that limits where notes are picked from. Answers can be changed until you press **Check answer**; then the result and a Next button appear. The current question, your answers and your score are kept when you switch to another screen and back (until the page is reloaded).
+
+### Drills
+
+Quick, single-focus repetition with instant feedback (no Check answer button).
+
+- **String Drill**: a natural note name (A to G, no sharps or flats) and a fretboard with one string highlighted. Tap that note on the highlighted string (either matching fret counts). Right or wrong shows on the fretboard for one second, then the next note appears. Settings at the top:
+  - **Frets**: 0–5 or 0–12 (default 0–12). With 0–5, only notes playable there are asked and the rest of the neck is shaded.
+  - **Strings**: In order (high e down to low E, then back to high e) or Random (a different random string each time). Default: In order.
+  - **Per string**: 3, 5, 10 or 20 questions before moving to the next string (default 5).
+
+  Changing a setting restarts the count on the current string.
 
 ### Reference
 
