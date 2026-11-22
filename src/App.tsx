@@ -29,6 +29,7 @@ export function App() {
         <a className="brand" href={`#/${DEFAULT_SCREEN.id}`}>
           fretto
         </a>
+        <h1 className="screen-title">{screen.title}</h1>
         <div className="header-slot" ref={setHeaderSlot} />
         <button
           className={`hamburger${menuOpen ? " open" : ""}`}

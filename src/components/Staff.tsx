@@ -10,7 +10,7 @@ import {
 /** Half a line-spacing: the vertical distance between adjacent positions. */
 const STEP = 9;
 const DEFAULT_WIDTH = 320;
-const PAD_Y = 14;
+const PAD_Y = 10;
 const STAFF_X1 = 8;
 const G4 = STAFF_BOTTOM_LINE + 2;
 
@@ -72,7 +72,7 @@ export function Staff({
   const [ghost, setGhost] = useState<Target | null>(null);
   const dragging = useRef(false);
 
-  const labelSpace = labels ? 22 : 0;
+  const labelSpace = labels ? 16 : 0;
   const staffHeight = (high - low) * STEP + PAD_Y * 2;
   const height = staffHeight + labelSpace;
   const y = (d: number) => PAD_Y + (high - d) * STEP;
@@ -168,7 +168,7 @@ export function Staff({
           ))}
 
       {labels?.map((l, i) => (
-        <text key={i} className="staff-label" x={l.x} y={staffHeight + 8} textAnchor="middle">
+        <text key={i} className="staff-label" x={l.x} y={staffHeight + 11} textAnchor="middle">
           {l.text}
         </text>
       ))}

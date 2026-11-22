@@ -48,10 +48,6 @@ export function ScaleReference() {
 
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>Scale</h1>
-      </div>
-
       <Segmented options={MODES} value={mode} onChange={setMode} label="Scale type" />
 
       <section className="card">

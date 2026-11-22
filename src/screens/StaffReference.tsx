@@ -37,10 +37,6 @@ export function StaffReference() {
 
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>Staff</h1>
-      </div>
-
       <label className="key-select">
         <span>Key</span>
         <select value={keyIndex} onChange={(e) => setKeyIndex(Number(e.target.value))}>

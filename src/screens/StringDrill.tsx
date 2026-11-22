@@ -99,10 +99,7 @@ export function StringDrill() {
 
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>String Drill</h1>
-        <ScoreDisplay score={score} />
-      </div>
+      <ScoreDisplay score={score} />
 
       <div className="settings">
         <div className="setting-row">

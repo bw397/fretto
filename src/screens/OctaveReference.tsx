@@ -59,10 +59,6 @@ const STAFF_LABELS = LEGEND.map(({ octave }, i) => {
 export function OctaveReference() {
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>Octaves</h1>
-      </div>
-
       <section className="card">
         <Fretboard
           markers={MARKERS}

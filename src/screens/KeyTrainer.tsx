@@ -160,10 +160,7 @@ export function KeyTrainer() {
 
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>Key Trainer</h1>
-        <ScoreDisplay score={score} />
-      </div>
+      <ScoreDisplay score={score} />
 
       <FretRangeToggle value={maxFret} onChange={changeRange} />
 

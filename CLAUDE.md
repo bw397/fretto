@@ -64,6 +64,8 @@ Drills (`StringDrill`) are for fast repetition: no Check answer button and no `R
 ## UI conventions
 
 - Design for a ~390px-wide phone first. Check narrow widths when adding header text or hints (`.hint` doesn't wrap).
+- Keep layouts compact so a whole question fits on a phone screen: spacing comes from `--gap` (between cards) and the card padding, so tighten those rather than shrinking tap targets (44px menu button, 44px note options, 38px toggles).
+- The screen title is shown in the sticky header (from `SCREENS`). Screens don't render their own `<h1>`; a screen just starts with its content.
 - Colours come from CSS variables in `:root`, overridden under `prefers-color-scheme: dark`. Don't hard-code new colours in components.
 - `Fretboard` and `Staff` are SVG with fixed viewBoxes that scale to the container width. Coordinates are in viewBox units.
 - Respect `prefers-reduced-motion` (see `scroll.ts` and the media query at the end of `index.css`).

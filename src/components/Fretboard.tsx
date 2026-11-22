@@ -1,12 +1,13 @@
 import { MAX_FRET, STANDARD_TUNING, STRING_NAMES, type FrettedNote } from "../lib/music";
 
 const W = 480;
-const H = 186;
 const NUT_X = 44;
 const END_X = W - 10;
-const TOP_Y = 22;
+const TOP_Y = 14;
 const STRING_GAP = 26;
 const BOTTOM_Y = TOP_Y + STRING_GAP * (STANDARD_TUNING.length - 1);
+/** Room under the wood for the fret numbers. */
+const H = BOTTOM_Y + 12 + 17;
 const INLAYS = [3, 5, 7, 9];
 
 /**
@@ -158,7 +159,7 @@ export function Fretboard({
       {[3, 5, 7, 9, 12]
         .filter((f) => f <= frets)
         .map((f) => (
-          <text key={f} className="fb-fret-num" x={noteX(f, frets)} y={H - 6} textAnchor="middle">
+          <text key={f} className="fb-fret-num" x={noteX(f, frets)} y={H - 4} textAnchor="middle">
             {f}
           </text>
         ))}

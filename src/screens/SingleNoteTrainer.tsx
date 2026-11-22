@@ -111,10 +111,7 @@ export function SingleNoteTrainer() {
 
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>Single Note Trainer</h1>
-        <ScoreDisplay score={score} />
-      </div>
+      <ScoreDisplay score={score} />
 
       <FretRangeToggle value={maxFret} onChange={changeRange} />
 

@@ -95,10 +95,7 @@ export function IntervalTrainer() {
 
   return (
     <div className="trainer">
-      <div className="trainer-head">
-        <h1>Interval Trainer</h1>
-        <ScoreDisplay score={score} />
-      </div>
+      <ScoreDisplay score={score} />
 
       <FretRangeToggle value={maxFret} onChange={changeRange} />
 
