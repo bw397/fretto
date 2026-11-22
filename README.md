@@ -25,6 +25,7 @@ Quick, single-focus repetition with instant feedback (no Check answer button).
   - **Per string**: 3, 5, 10 or 20 questions before moving to the next string (default 5).
 
   Changing a setting restarts the count on the current string.
+- **Scale Drill**: a random major or minor key, with its root shown in yellow at a spot where the whole scale fits above it (no lower than the root's fret, within fret 12). You're asked for the six other notes of the scale in random order (e.g. "E, the 3rd above the root"). Tap the note in the octave above the root, on any string. Right answers stay on the board in green; a wrong answer shows the correct spot in red for a second, then that note stays on the board. After all six, the drill shows your score for the scale and moves to a new key.
 
 ### Reference
 

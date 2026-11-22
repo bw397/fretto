@@ -20,6 +20,7 @@ Run the tests, typecheck and build after every change.
   - `keys.ts`: major and natural-minor keys, key signatures, key-trainer rounds
   - `scale.ts`: lays a one-octave scale out on the fretboard from a tapped root
   - `intervals.ts`: interval names and interval-trainer rounds
+  - `drill.ts` / `scaleDrill.ts`: String Drill and Scale Drill logic
   - `score.ts`: per-screen score and streak store (`useScore`)
   - `screenState.ts`: `useScreenState`, which is `useState` that survives screen switches
   - `scroll.ts`: auto-scroll helpers for the practice screens
@@ -59,7 +60,7 @@ The trainers (`SingleNoteTrainer`, `KeyTrainer`, `IntervalTrainer`) follow the s
 
 ### Drill screen pattern
 
-Drills (`StringDrill`) are for fast repetition: no Check answer button and no `RoundResult`. A tap is graded immediately: `record(ok)`, then the persisted progress and question advance at once. The answered question and its right/wrong markers are held in local (non-persisted) `feedback` state for about a second and shown in place of the new question. Advancing at once means leaving mid-feedback can't let the same question be answered twice. `Fretboard`'s `focusString` prop highlights one string and limits taps to it.
+Drills (`StringDrill`, `ScaleDrill`) are for fast repetition: no Check answer button and no `RoundResult`. A tap is graded immediately: `record(ok)`, then the persisted progress and question advance at once. The answered question and its right/wrong markers are held in local (non-persisted) `feedback` state for about a second and shown in place of the new question. Advancing at once means leaving mid-feedback can't let the same question be answered twice. `Fretboard`'s `focusString` prop highlights one string and limits taps to it.
 
 ## UI conventions
 
