@@ -53,6 +53,16 @@ export const PITCH_CLASS_OPTIONS: PitchClassOption[] = [
   { pc: 11, label: "B" },
 ];
 
+/** True for the white-key pitch classes C D E F G A B. */
+export function isNaturalPc(pc: number): boolean {
+  return LETTERS.some((l) => LETTER_SEMITONES[l] === mod(pc, 12));
+}
+
+/** The seven natural note-name choices. */
+export const NATURAL_OPTIONS: PitchClassOption[] = PITCH_CLASS_OPTIONS.filter((o) =>
+  isNaturalPc(o.pc),
+);
+
 export function pitchClassLabel(pc: number): string {
   return PITCH_CLASS_OPTIONS[mod(pc, 12)]!.label;
 }
@@ -158,17 +168,24 @@ export function ledgerLines(diatonic: number): number[] {
   return lines;
 }
 
+/**
+ * A random position within `maxFret`, different from `avoid`. With
+ * `naturalOnly`, only positions that play a natural note (no sharps/flats).
+ */
 export function randomFrettedNote(
   rand: () => number = Math.random,
   maxFret: number = MAX_FRET,
   avoid?: FrettedNote,
+  naturalOnly = false,
 ): FrettedNote {
   for (;;) {
     const note = {
       string: Math.floor(rand() * STANDARD_TUNING.length),
       fret: Math.floor(rand() * (maxFret + 1)),
     };
-    if (!avoid || note.string !== avoid.string || note.fret !== avoid.fret) return note;
+    if (avoid && note.string === avoid.string && note.fret === avoid.fret) continue;
+    if (naturalOnly && !isNaturalPc(soundingMidi(note))) continue;
+    return note;
   }
 }
 

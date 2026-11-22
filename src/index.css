@@ -757,13 +757,8 @@ body {
 
 .note-options {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.35rem;
-}
-@media (min-width: 520px) {
-  .note-options {
-    grid-template-columns: repeat(6, 1fr);
-  }
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
 }
 .note-option {
   position: relative;

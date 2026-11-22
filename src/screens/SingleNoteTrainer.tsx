@@ -6,7 +6,7 @@ import { Fretboard } from "../components/Fretboard";
 import { Staff, type StaffNote } from "../components/Staff";
 import {
   MAX_FRET,
-  PITCH_CLASS_OPTIONS,
+  NATURAL_OPTIONS,
   accidentalFor,
   diatonicIndex,
   formatSpelling,
@@ -37,7 +37,7 @@ export function SingleNoteTrainer() {
   // Kept across screen switches so the current question isn't lost.
   const [maxFret, setMaxFret] = useScreenState("single-note.maxFret", MAX_FRET);
   const [note, setNote] = useScreenState<FrettedNote>("single-note.note", () =>
-    randomFrettedNote(Math.random, MAX_FRET),
+    randomFrettedNote(Math.random, MAX_FRET, undefined, true),
   );
   const [chosenPc, setChosenPc] = useScreenState<number | null>("single-note.name", null);
   const [placed, setPlaced] = useScreenState<number | null>("single-note.placed", null);
@@ -73,7 +73,7 @@ export function SingleNoteTrainer() {
   }
 
   function next(range = maxFret) {
-    setNote((prev) => randomFrettedNote(Math.random, range, prev));
+    setNote((prev) => randomFrettedNote(Math.random, range, prev, true));
     setChosenPc(null);
     setPlaced(null);
     setRevealed(false);
@@ -124,7 +124,7 @@ export function SingleNoteTrainer() {
           <span className="step-num">1</span> Name the note
         </h2>
         <div className="note-options" role="radiogroup" aria-label="Note name">
-          {PITCH_CLASS_OPTIONS.map((opt) => {
+          {NATURAL_OPTIONS.map((opt) => {
             const isChosen = chosenPc === opt.pc;
             const isAnswer = revealed && opt.pc === answerPc;
             let cls = "note-option";

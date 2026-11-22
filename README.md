@@ -8,7 +8,7 @@ Open any screen from the hamburger menu (top right). The menu groups screens int
 
 ### Practice
 
-- **Single Note Trainer** (the default): a random note is fretted on the fretboard. Pick its name, then tap or drag to place it on the staff. Once you've given both answers, the app checks them and shows the correct note in red if you got either one wrong.
+- **Single Note Trainer** (the default): a random natural note (no sharps or flats) is fretted on the fretboard. Pick its name from C D E F G A B, then tap or drag to place it on the staff. Once you've given both answers, the app checks them and shows the correct note in red if you got either one wrong.
 - **Key Trainer**: a random major or natural-minor key (up to six sharps or flats), its root and three other notes from the key. The root is shown at a random spot on the fretboard. Tap the fretboard to find the other three notes (any matching spot counts; tap a marker to remove it). Then write each one on the staff, in the octave you tapped on the fretboard. The staff shows the key signature.
 
 - **Interval Trainer**: four intervals (e.g. third, fifth, minor third, seventh) and a random root on the fretboard. Tap where each interval is: the nearest one above the root (within an octave), on any string. Tap a marker to remove it. Wrong answers show the nearest correct spot in red.

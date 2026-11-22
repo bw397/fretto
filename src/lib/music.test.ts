@@ -6,6 +6,7 @@ import {
   ledgerLines,
   octaveOf,
   pitchClass,
+  isNaturalPc,
   randomFrettedNote,
   soundingMidi,
   spellingAtPosition,
@@ -82,6 +83,9 @@ describe("random notes", () => {
       expect(n.fret).toBeGreaterThanOrEqual(0);
       expect(n.fret).toBeLessThanOrEqual(12);
       expect(n).not.toEqual(avoid);
+      const natural = randomFrettedNote(Math.random, 5, avoid, true);
+      expect(natural.fret).toBeLessThanOrEqual(5);
+      expect(isNaturalPc(soundingMidi(natural))).toBe(true);
     }
   });
 
