@@ -2,7 +2,7 @@
  * Scale Drill: a key and its root on the fretboard; place each other note of
  * the scale (the octave above the root) in random order.
  */
-import { KEYS, type MusicalKey } from "./keys";
+import { KEYS, sameKey, type MusicalKey } from "./keys";
 import { MAX_FRET, STANDARD_TUNING, mod, soundingMidi, type FrettedNote } from "./music";
 import { scaleFromRoot, type ScaleNote } from "./scale";
 
@@ -54,7 +54,7 @@ function shuffle<T>(items: T[], rand: () => number): T[] {
 
 export function randomScaleRound(rand: () => number = Math.random, avoid?: MusicalKey): ScaleRound {
   let key = KEYS[Math.floor(rand() * KEYS.length)]!;
-  while (key === avoid) key = KEYS[Math.floor(rand() * KEYS.length)]!;
+  while (sameKey(key, avoid)) key = KEYS[Math.floor(rand() * KEYS.length)]!;
   const roots = rootPositionsForKey(key);
   const root = roots[Math.floor(rand() * roots.length)]!;
   return { key, root, order: shuffle([1, 2, 3, 4, 5, 6], rand) };

@@ -8,6 +8,9 @@
 import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { App } from "./App";
+import { loadPersisted } from "./lib/persist";
+import { restoreScores } from "./lib/score";
+import { restoreScreenState } from "./lib/screenState";
 
 const elem = document.getElementById("root")!;
 const app = (
@@ -18,4 +21,10 @@ const app = (
 
 // https://bun.com/docs/bundler/hot-reloading#import-meta-hot-data
 type HotData = { root?: Root };
-((import.meta.hot.data as HotData).root ??= createRoot(elem)).render(app);
+// Load saved scores and screen state before the first render, so screens
+// start from them instead of a fresh question.
+loadPersisted().then((saved) => {
+  restoreScores(saved);
+  restoreScreenState(saved);
+  ((import.meta.hot.data as HotData).root ??= createRoot(elem)).render(app);
+});

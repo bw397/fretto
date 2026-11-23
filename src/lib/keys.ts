@@ -51,6 +51,11 @@ export function keyName(k: MusicalKey): string {
   return `${noteName(k.tonic)} ${k.mode}`;
 }
 
+/** Compares by value: a restored round holds a copy of its key, not the `KEYS` entry. */
+export function sameKey(a: MusicalKey | undefined, b: MusicalKey | undefined): boolean {
+  return !!a && !!b && a.mode === b.mode && a.tonic.pc === b.tonic.pc;
+}
+
 export function buildKey(letter: Letter, accidental: Accidental, mode: Mode): MusicalKey {
   const tonicPc = mod(LETTER_SEMITONES[letter] + accOffset(accidental), 12);
   const start = LETTERS.indexOf(letter);
@@ -138,7 +143,7 @@ export function randomKeyRound(
   avoid?: MusicalKey,
 ): KeyRound {
   let key = pick(NATURAL_KEYS, rand);
-  while (avoid && key === avoid) key = pick(NATURAL_KEYS, rand);
+  while (sameKey(key, avoid)) key = pick(NATURAL_KEYS, rand);
   const rootPosition = pick(positionsForPc(key.tonic.pc, maxFret), rand);
   const pool = key.notes.slice(1);
   const targets: KeyNote[] = [];

@@ -1,16 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 import { HeaderSlotContext } from "./components/HeaderSlot";
 import { Menu } from "./components/Menu";
+import { readScreenState, writeScreenState } from "./lib/screenState";
 import { DEFAULT_SCREEN, SCREENS } from "./screens";
 import "./index.css";
+
+const LAST_SCREEN_KEY = "app.screen";
 
 function screenFromHash() {
   const id = window.location.hash.replace(/^#\/?/, "");
   return SCREENS.find((s) => s.id === id) ?? DEFAULT_SCREEN;
 }
 
+/** The screen in the URL, or with no hash, the screen open last time. */
+function initialScreen() {
+  if (window.location.hash.replace(/^#\/?/, "")) return screenFromHash();
+  const saved = SCREENS.find((s) => s.id === readScreenState<string>(LAST_SCREEN_KEY));
+  if (!saved) return DEFAULT_SCREEN;
+  history.replaceState(null, "", `#/${saved.id}`);
+  return saved;
+}
+
 export function App() {
-  const [screen, setScreen] = useState(screenFromHash);
+  const [screen, setScreen] = useState(initialScreen);
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerSlot, setHeaderSlot] = useState<HTMLElement | null>(null);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -20,6 +32,8 @@ export function App() {
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
+
+  useEffect(() => writeScreenState(LAST_SCREEN_KEY, screen.id), [screen.id]);
 
   const Screen = screen.component;
 

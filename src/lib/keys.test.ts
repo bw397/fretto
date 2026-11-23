@@ -9,6 +9,7 @@ import {
   noteName,
   positionsForPc,
   randomKeyRound,
+  sameKey,
   staffPositionInKey,
 } from "./keys";
 import { diatonicIndex } from "./music";
@@ -89,5 +90,14 @@ describe("noteAtPosition", () => {
     expect(noteName(noteAtPosition(diatonicIndex({ letter: "G", octave: 3 }), bMinor))).toBe("G");
     const eFlat = buildKey("E", "flat", "major");
     expect(noteName(noteAtPosition(diatonicIndex({ letter: "A", octave: 4 }), eFlat))).toBe("A♭");
+  });
+});
+
+describe("sameKey", () => {
+  test("compares by value, so a restored copy matches", () => {
+    const g = buildKey("G", null, "major");
+    expect(sameKey(g, structuredClone(g))).toBe(true);
+    expect(sameKey(g, buildKey("G", null, "minor"))).toBe(false);
+    expect(sameKey(g, undefined)).toBe(false);
   });
 });

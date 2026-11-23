@@ -13,7 +13,7 @@ Open any screen from the hamburger menu (top right). The menu groups screens int
 
 - **Interval Trainer**: five intervals (e.g. third, fifth, minor third, seventh, octave) and a random natural root (no sharps or flats) on the fretboard, labelled with its name. Tap where each interval is: the nearest one above the root (within an octave), on any string. Tap a marker to remove it. Wrong answers show the nearest correct spot in red.
 
-All three trainers have a Frets 0–5 / Frets 0–12 toggle that limits where notes are picked from. Answers can be changed until you press **Check answer**; then the result and a Next button appear. The current question, your answers and your score are kept when you switch to another screen and back (until the page is reloaded).
+All three trainers have a Frets 0–5 / Frets 0–12 toggle that limits where notes are picked from. Answers can be changed until you press **Check answer**; then the result and a Next button appear. The current question, your answers and your score are kept when you switch screens and are saved in the browser (IndexedDB), so they're still there after a reload or when you come back later. So are the reference screens' inputs and the screen you were on. Each score counts up to 999 questions, then starts again from 1.
 
 ### Drills
 

@@ -21,8 +21,9 @@ Run the tests, typecheck and build after every change.
   - `scale.ts`: lays a one-octave scale out on the fretboard from a tapped root
   - `intervals.ts`: interval names and interval-trainer rounds
   - `drill.ts` / `scaleDrill.ts`: String Drill and Scale Drill logic
-  - `score.ts`: per-screen score and streak store (`useScore`)
-  - `screenState.ts`: `useScreenState`, which is `useState` that survives screen switches
+  - `score.ts`: per-screen score and streak store (`useScore`); the count restarts at 1 after 999 questions
+  - `screenState.ts`: `useScreenState`, which is `useState` that survives screen switches and reloads
+  - `persist.ts`: IndexedDB key-value storage behind both stores
   - `scroll.ts`: auto-scroll helpers for the practice screens
 - `src/components/`: reusable UI: `Fretboard`, `Staff`, `Menu`, `RoundResult`, `ScoreDisplay`, `Segmented`, `FretRangeToggle`, `HeaderSlot`
 - `src/screens/`: one component per screen, registered in `src/screens/index.ts`
@@ -45,7 +46,9 @@ A screen is unmounted when you leave it, so:
 
 - **Any state that should survive switching screens must use `useScreenState("<screen>.<name>", initial)`**, not `useState`. That includes the current question and answers on trainers, and every input on reference screens. Prefix keys with the screen id.
 - Scores go through `useScore("<screen id>")` and are shown with `<ScoreDisplay>`, which portals into the sticky header.
-- Both stores are in memory only and reset on page reload.
+- Both stores are saved to IndexedDB (`persist.ts`) and loaded in `frontend.tsx` before the first render, so they survive reloads. The last screen is saved too (`app.screen`) and opened when the URL has no hash; a hash in the URL wins.
+- Persisted values must be plain, structured-cloneable data. A restored value is a copy, so compare by value, never by identity with constants like `KEYS` (use `sameKey`).
+- **Bump `DATA_VERSION` in `persist.ts` whenever the shape of a persisted value changes** (a round type, a store key's meaning, a count like `PROMPT_COUNT`). Saved data from another version is discarded.
 
 ### Practice screen pattern
 
