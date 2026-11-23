@@ -9,9 +9,9 @@ Open any screen from the hamburger menu (top right). The menu groups screens int
 ### Practice
 
 - **Single Note Trainer** (the default): a random natural note (no sharps or flats) is fretted on the fretboard. Pick its name from C D E F G A B, then tap or drag to place it on the staff. Once you've given both answers, the app checks them and shows the correct note in red if you got either one wrong.
-- **Key Trainer**: a random major or natural-minor key (up to six sharps or flats), its root and three other notes from the key. The root is shown at a random spot on the fretboard. Tap the fretboard to find the other three notes (any matching spot counts; tap a marker to remove it). Then write each one on the staff, in the octave you tapped on the fretboard. The staff shows the key signature.
+- **Key Trainer**: a random major or natural-minor key on a natural root (C D E F G A B, so e.g. F major or B minor but not F♯ major), its root and three other notes from the key. The root is shown at a random spot on the fretboard. Tap the fretboard to find the other three notes (any matching spot counts; tap a marker to remove it). Then write each one on the staff, in the octave you tapped on the fretboard. The staff shows the key signature.
 
-- **Interval Trainer**: four intervals (e.g. third, fifth, minor third, seventh) and a random root on the fretboard. Tap where each interval is: the nearest one above the root (within an octave), on any string. Tap a marker to remove it. Wrong answers show the nearest correct spot in red.
+- **Interval Trainer**: five intervals (e.g. third, fifth, minor third, seventh, octave) and a random natural root (no sharps or flats) on the fretboard, labelled with its name. Tap where each interval is: the nearest one above the root (within an octave), on any string. Tap a marker to remove it. Wrong answers show the nearest correct spot in red.
 
 All three trainers have a Frets 0–5 / Frets 0–12 toggle that limits where notes are picked from. Answers can be changed until you press **Check answer**; then the result and a Next button appear. The current question, your answers and your score are kept when you switch to another screen and back (until the page is reloaded).
 

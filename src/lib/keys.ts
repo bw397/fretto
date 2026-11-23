@@ -129,13 +129,16 @@ function pick<T>(items: T[], rand: () => number): T {
   return items[Math.floor(rand() * items.length)]!;
 }
 
+/** Keys whose tonic is a natural note (no sharp or flat): the Key Trainer's questions. */
+export const NATURAL_KEYS: MusicalKey[] = KEYS.filter((k) => k.tonic.accidental === null);
+
 export function randomKeyRound(
   maxFret: number = MAX_FRET,
   rand: () => number = Math.random,
   avoid?: MusicalKey,
 ): KeyRound {
-  let key = pick(KEYS, rand);
-  while (avoid && key === avoid) key = pick(KEYS, rand);
+  let key = pick(NATURAL_KEYS, rand);
+  while (avoid && key === avoid) key = pick(NATURAL_KEYS, rand);
   const rootPosition = pick(positionsForPc(key.tonic.pc, maxFret), rand);
   const pool = key.notes.slice(1);
   const targets: KeyNote[] = [];

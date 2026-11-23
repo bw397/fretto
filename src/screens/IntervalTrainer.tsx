@@ -8,7 +8,7 @@ import {
   randomIntervalRound,
   type IntervalRound,
 } from "../lib/intervals";
-import { MAX_FRET, mod, soundingMidi, type FrettedNote } from "../lib/music";
+import { MAX_FRET, mod, pitchClassLabel, soundingMidi, type FrettedNote } from "../lib/music";
 import { useScore } from "../lib/score";
 import { useScreenState } from "../lib/screenState";
 
@@ -66,7 +66,8 @@ export function IntervalTrainer() {
     newRound(range);
   }
 
-  const markers: FretMarker[] = [{ ...root, tone: "note", label: "R" }];
+  const rootName = pitchClassLabel(rootMidi);
+  const markers: FretMarker[] = [{ ...root, tone: "note", label: rootName }];
   taps.forEach((t, i) => {
     if (!t) return;
     const label = intervals[i]!.short;
@@ -108,7 +109,7 @@ export function IntervalTrainer() {
             </span>
           ))}
         </div>
-        <p className="interval-help">Find each interval above the root (R), on any string.</p>
+        <p className="interval-help">Find each interval above the root ({rootName}), on any string.</p>
       </section>
 
       <section className="card">
@@ -132,7 +133,7 @@ export function IntervalTrainer() {
         onNext={() => newRound()}
       >
         {correctCount === PROMPT_COUNT ? (
-          "Correct! All four intervals are in the right places."
+          "Correct! All five intervals are in the right places."
         ) : (
           <>
             Not quite. {correctCount}/{PROMPT_COUNT} correct

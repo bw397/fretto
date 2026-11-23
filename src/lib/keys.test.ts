@@ -75,6 +75,7 @@ describe("helpers", () => {
       expect(r.rootPosition.fret).toBeLessThanOrEqual(5);
       expect(new Set(r.targets).size).toBe(3);
       expect(r.targets).not.toContain(r.key.tonic);
+      expect(r.key.tonic.accidental).toBeNull();
       for (const t of r.targets) expect(r.key.notes).toContain(t);
     }
   });

@@ -44,6 +44,10 @@ export function ScaleReference() {
     labels.push({ x, text: noteName(n) });
   });
 
+  // Notes past fret 12 are still written on the staff, so they can go above
+  // the fretboard's range; grow the staff to fit them.
+  const staffHigh = Math.max(STAFF_HIGH, ...staffNotes.map((n) => n.position + 1));
+
   const missing = scale?.notes.filter((n) => !n.position).length ?? 0;
 
   return (
@@ -78,7 +82,7 @@ export function ScaleReference() {
             <h2 className="scale-title">{keyName(scale.key)}</h2>
             <Staff
               low={STAFF_LOW}
-              high={STAFF_HIGH}
+              high={staffHigh}
               notes={staffNotes}
               disabled
               keySignature={scale.key.signature}

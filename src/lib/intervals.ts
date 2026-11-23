@@ -1,4 +1,4 @@
-import { MAX_FRET, STANDARD_TUNING, soundingMidi, type FrettedNote } from "./music";
+import { MAX_FRET, STANDARD_TUNING, isNaturalPc, soundingMidi, type FrettedNote } from "./music";
 
 export interface Interval {
   semitones: number;
@@ -22,7 +22,7 @@ export const INTERVALS: Interval[] = [
   { semitones: 12, name: "octave", short: "8" },
 ];
 
-export const PROMPT_COUNT = 4;
+export const PROMPT_COUNT = 5;
 
 /** Every fretboard position (frets 0..maxFret) that sounds exactly `midi`. */
 export function positionsForMidi(midi: number, maxFret: number = MAX_FRET): FrettedNote[] {
@@ -45,8 +45,9 @@ export interface IntervalRound {
 }
 
 /**
- * A random root within `maxFret` and four distinct intervals whose target
- * notes can all be played within `maxFret` as well.
+ * A random natural-note root (no sharps or flats) within `maxFret` and
+ * `PROMPT_COUNT` distinct intervals whose target notes can all be played
+ * within `maxFret` as well.
  */
 export function randomIntervalRound(
   maxFret: number = MAX_FRET,
@@ -61,6 +62,7 @@ export function randomIntervalRound(
     };
     if (avoid && root.string === avoid.string && root.fret === avoid.fret) continue;
     const rootMidi = soundingMidi(root);
+    if (!isNaturalPc(rootMidi)) continue;
     const pool = INTERVALS.filter((i) => rootMidi + i.semitones <= highest);
     if (pool.length < PROMPT_COUNT) continue;
     const intervals: Interval[] = [];

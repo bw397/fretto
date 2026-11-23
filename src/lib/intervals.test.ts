@@ -5,7 +5,7 @@ import {
   positionsForMidi,
   randomIntervalRound,
 } from "./intervals";
-import { soundingMidi } from "./music";
+import { isNaturalPc, soundingMidi } from "./music";
 
 describe("intervals", () => {
   test("cover one octave, one per semitone", () => {
@@ -29,12 +29,13 @@ describe("intervals", () => {
 });
 
 describe("randomIntervalRound", () => {
-  test("four distinct intervals, all reachable within the fret range", () => {
+  test("a natural root and five distinct intervals, all reachable within the fret range", () => {
     for (const maxFret of [5, 12]) {
       for (let i = 0; i < 300; i++) {
         const { root, intervals } = randomIntervalRound(maxFret);
         expect(root.fret).toBeLessThanOrEqual(maxFret);
-        expect(new Set(intervals).size).toBe(4);
+        expect(isNaturalPc(soundingMidi(root))).toBe(true);
+        expect(new Set(intervals).size).toBe(5);
         for (const iv of intervals) {
           expect(positionsForMidi(soundingMidi(root) + iv.semitones, maxFret).length).toBeGreaterThan(0);
         }
