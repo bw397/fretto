@@ -105,7 +105,7 @@ export function IntervalTrainer() {
           {intervals.map((iv, i) => (
             <span key={iv.semitones} className={`key-chip${i === nextSlot ? " next" : ""}`}>
               {iv.name}
-              <small>{iv.short}</small>
+              <small className="interval-short">{iv.short}</small>
             </span>
           ))}
         </div>

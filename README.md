@@ -29,7 +29,7 @@ Quick, single-focus repetition with instant feedback (no Check answer button).
 
 ### Reference
 
-- **Scale**: choose major or minor, then tap any spot on the fretboard to set the root (shown in yellow). The fretboard fills in one octave of the scale, up to the next root. Notes never go below the root's fret. Each one goes in the four frets starting at the root where possible (one finger per fret), then a one-fret stretch, then further up the neck, always at the spot nearest the note before. The staff below shows the scale ascending, with its key signature.
+- **Scale**: choose major or minor, then tap any spot on the fretboard to set the root (shown in yellow). The fretboard fills in one octave of the scale, up to the next root. Notes never go below the root's fret. Each one goes in the four frets starting at the root where possible (one finger per fret), then a one-fret stretch, then further up the neck, always at the spot nearest the note before. A second toggle labels the fretboard markers with note names or with intervals from the root (R, 2, m3, 4, 5 …). The staff below shows the scale ascending, with its key signature.
 - **Staff**: pick a key, then tap the staff to write up to 8 notes (one per column; tap a note again to remove it). Each note's name, with the key signature applied, shows underneath. Changing the key keeps the notes and renames them.
 - **Octaves**: every fretboard position from the open strings to fret 12, coloured and numbered by its octave (scientific pitch notation, for the note the guitar sounds: open low E = E2). A legend shows each octave's range on the fretboard, and a staff underneath shows each octave's natural notes stacked in one column, in the same colours (written an octave higher, as usual for guitar).
 

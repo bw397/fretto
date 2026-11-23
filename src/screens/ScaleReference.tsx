@@ -1,8 +1,9 @@
 import { Fretboard, type FretMarker } from "../components/Fretboard";
 import { Segmented } from "../components/Segmented";
 import { Staff, type StaffNote } from "../components/Staff";
+import { INTERVALS } from "../lib/intervals";
 import { keyName, noteName, staffPositionInKey, type Mode } from "../lib/keys";
-import { writtenRange, type FrettedNote } from "../lib/music";
+import { mod, writtenRange, type FrettedNote } from "../lib/music";
 import { scaleFromRoot } from "../lib/scale";
 import { useScreenState } from "../lib/screenState";
 
@@ -19,9 +20,23 @@ const MODES = [
   { value: "minor" as Mode, label: "Minor" },
 ];
 
+type LabelMode = "notes" | "intervals";
+
+const LABEL_MODES = [
+  { value: "notes" as LabelMode, label: "Notes" },
+  { value: "intervals" as LabelMode, label: "Intervals" },
+];
+
+/** Interval above the root for a fretboard marker: R for both roots, else e.g. 2, m3, 5. */
+function intervalLabel(semitones: number): string {
+  const s = mod(semitones, 12);
+  return s === 0 ? "R" : INTERVALS.find((i) => i.semitones === s)!.short;
+}
+
 export function ScaleReference() {
   const [mode, setMode] = useScreenState<Mode>("scale.mode", "major");
   const [root, setRoot] = useScreenState<FrettedNote | null>("scale.root", null);
+  const [labelMode, setLabelMode] = useScreenState<LabelMode>("scale.labels", "notes");
 
   const scale = root ? scaleFromRoot(root, mode) : null;
 
@@ -32,7 +47,8 @@ export function ScaleReference() {
   scale?.notes.forEach((n, i) => {
     const isRoot = n.degree === 0 || n.degree === 7;
     if (n.position) {
-      markers.push({ ...n.position, tone: isRoot ? "root" : "placed", label: noteName(n) });
+      const label = labelMode === "notes" ? noteName(n) : intervalLabel(n.midi - scale.notes[0]!.midi);
+      markers.push({ ...n.position, tone: isRoot ? "root" : "placed", label });
     }
     const x = FIRST_X + i * NOTE_SPACING;
     staffNotes.push({
@@ -52,7 +68,15 @@ export function ScaleReference() {
 
   return (
     <div className="trainer">
-      <Segmented options={MODES} value={mode} onChange={setMode} label="Scale type" />
+      <div className="segmented-row">
+        <Segmented options={MODES} value={mode} onChange={setMode} label="Scale type" />
+        <Segmented
+          options={LABEL_MODES}
+          value={labelMode}
+          onChange={setLabelMode}
+          label="Fretboard labels"
+        />
+      </div>
 
       <section className="card">
         <h2 className="step-label">

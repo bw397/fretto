@@ -582,6 +582,11 @@ body {
   letter-spacing: 0.05em;
   opacity: 0.75;
 }
+/* Interval labels are case-sensitive: m3 is a minor third, M3 a major one. */
+.key-chip small.interval-short {
+  text-transform: none;
+  letter-spacing: 0;
+}
 .interval-help {
   margin: 0;
   color: var(--muted);
@@ -598,6 +603,14 @@ body {
 }
 
 /* Scale reference */
+
+.segmented-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.segmented-row .segmented {
+  flex: 1;
+}
 
 .empty-hint {
   margin: 0.25rem 0 0;
